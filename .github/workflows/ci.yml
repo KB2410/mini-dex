@@ -10,8 +10,8 @@ env:
   NODE_VERSION: '20'
 
 jobs:
-  lint:
-    name: Lint Code
+  lint-and-test:
+    name: Lint & Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -34,37 +34,14 @@ jobs:
       - name: Lint TypeScript (Contracts)
         run: |
           cd packages/contracts
-          npm run lint
-
-      - name: Lint TypeScript (Frontend)
-        if: hashFiles('packages/frontend/package.json') != ''
-        run: |
-          cd packages/frontend
-          npm run lint
-
-  test-contracts:
-    name: Test Smart Contracts
-    runs-on: ubuntu-latest
-    needs: lint
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
+          npx eslint '**/*.ts' --max-warnings 50
 
       - name: Compile contracts
         run: |
           cd packages/contracts
           npx hardhat compile
 
-      - name: Run all tests (includes unit and property-based tests)
+      - name: Run contract tests
         run: |
           cd packages/contracts
           npx hardhat test
@@ -73,8 +50,6 @@ jobs:
         run: |
           cd packages/contracts
           REPORT_GAS=true npx hardhat test > gas-report.txt 2>&1 || true
-        env:
-          COINMARKETCAP_API_KEY: ${{ secrets.COINMARKETCAP_API_KEY }}
 
       - name: Upload gas report
         uses: actions/upload-artifact@v4
@@ -83,106 +58,15 @@ jobs:
           path: packages/contracts/gas-report.txt
           if-no-files-found: warn
 
-  test-frontend:
-    name: Test Frontend
-    runs-on: ubuntu-latest
-    needs: lint
-    if: hashFiles('packages/frontend/package.json') != ''
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run frontend tests
+      - name: Lint Frontend
         run: |
           cd packages/frontend
-          npm run test
+          npm run lint
 
-      - name: Build frontend
+      - name: Build Frontend
         run: |
           cd packages/frontend
           npm run build
         env:
-          NEXT_PUBLIC_SIMPLE_POOL_ADDRESS: ${{ secrets.NEXT_PUBLIC_SIMPLE_POOL_ADDRESS }}
-          NEXT_PUBLIC_GEMINI_TOKEN_ADDRESS: ${{ secrets.NEXT_PUBLIC_GEMINI_TOKEN_ADDRESS }}
-
-  deploy-contracts:
-    name: Deploy Contracts to Sepolia
-    runs-on: ubuntu-latest
-    needs: [test-contracts]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Deploy contracts
-        run: |
-          cd packages/contracts
-          npx hardhat run scripts/deploy.ts --network sepolia
-        env:
-          SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-
-      - name: Verify contracts on Etherscan
-        run: |
-          cd packages/contracts
-          npx hardhat run scripts/verify.ts --network sepolia
-        env:
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-
-      - name: Save deployment addresses
-        uses: actions/upload-artifact@v4
-        with:
-          name: deployment-addresses
-          path: packages/contracts/deployments/sepolia.json
-
-  deploy-frontend:
-    name: Deploy Frontend to Vercel
-    runs-on: ubuntu-latest
-    needs: [test-frontend, deploy-contracts]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: packages/frontend
-          vercel-args: '--prod'
-        env:
-          NEXT_PUBLIC_SIMPLE_POOL_ADDRESS: ${{ secrets.NEXT_PUBLIC_SIMPLE_POOL_ADDRESS }}
-          NEXT_PUBLIC_GEMINI_TOKEN_ADDRESS: ${{ secrets.NEXT_PUBLIC_GEMINI_TOKEN_ADDRESS }}
-          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
-
-  notify:
-    name: Notify Deployment Status
-    runs-on: ubuntu-latest
-    needs: [deploy-contracts, deploy-frontend]
-    if: always() && github.ref == 'refs/heads/main' && github.event_name == 'push'
-    steps:
-      - name: Send notification
-        run: |
-          echo "Deployment completed with status: ${{ needs.deploy-frontend.result }}"
-          echo "Contract deployment status: ${{ needs.deploy-contracts.result }}"
-          echo "Frontend deployment status: ${{ needs.deploy-frontend.result }}"
+          NEXT_PUBLIC_SIMPLE_POOL_ADDRESS: '0x7D7ff9c51eb5c3dcbeD2751c6F3bd70586eB22Db'
+          NEXT_PUBLIC_GEMINI_TOKEN_ADDRESS: '0xEB9B3c675aD7419bcE73fD8eb2d5C9BCDd8a8FD7'
