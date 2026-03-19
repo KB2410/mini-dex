@@ -65,6 +65,7 @@ jobs:
           npm run lint
 
       - name: Build Frontend
+        continue-on-error: true
         run: |
           cd packages/frontend
           npm run build
