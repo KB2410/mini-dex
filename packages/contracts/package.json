@@ -1,0 +1,34 @@
+{
+  "name": "@mini-dex/contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for Mini-DEX",
+  "scripts": {
+    "build": "hardhat compile",
+    "test": "hardhat test",
+    "lint": "solhint 'contracts/**/*.sol' && eslint '**/*.ts'",
+    "lint:sol": "solhint 'contracts/**/*.sol'",
+    "lint:ts": "eslint '**/*.ts'",
+    "clean": "hardhat clean",
+    "deploy": "hardhat run scripts/deploy.ts --network sepolia",
+    "verify": "hardhat run scripts/verify.ts --network sepolia"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@types/chai": "^4.3.11",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "@typescript-eslint/parser": "^6.18.0",
+    "eslint": "^8.56.0",
+    "hardhat": "^2.19.4",
+    "solhint": "^4.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
+    "ethers": "^6.9.2",
+    "chai": "^4.3.10",
+    "fast-check": "^3.15.0"
+  }
+}
