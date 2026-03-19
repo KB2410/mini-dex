@@ -1,0 +1,24 @@
+{
+  "name": "mini-dex",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mini-DEX: A decentralized exchange for ETH to ERC-20 token swaps",
+  "packageManager": "npm@10.2.4",
+  "workspaces": [
+    "packages/contracts",
+    "packages/frontend"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.8.14"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
