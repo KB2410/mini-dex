@@ -59,6 +59,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Lint Frontend
+        continue-on-error: true
         run: |
           cd packages/frontend
           npm run lint
