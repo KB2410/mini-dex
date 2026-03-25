@@ -2,7 +2,7 @@
 
 A production-ready decentralized exchange (DEX) built on **Stellar Soroban** using **Rust**, featuring automated market maker (AMM) mechanics with constant product formula (x × y = k), comprehensive testing, and a modern Next.js frontend.
 
-🚀 **Live Demo**: Coming soon (Frontend deployment in progress)
+🚀 **Live Demo**: [https://frontend-chi-wheat-42.vercel.app](https://frontend-chi-wheat-42.vercel.app)
 
 ![CI/CD](https://github.com/KB2410/mini-dex/actions/workflows/ci.yml/badge.svg)
 
@@ -63,7 +63,7 @@ Fully responsive design built with Tailwind CSS - works seamlessly on desktop, t
 - ✅ **Transaction hash**: [8cc11ba447b5e5d8af971840ebdf8874073902ca79632e5193b7a347f8e90e9f](https://stellar.expert/explorer/testnet/tx/8cc11ba447b5e5d8af971840ebdf8874073902ca79632e5193b7a347f8e90e9f)
 - ✅ **Mobile screenshot**: `docs/mobile-responsive.png`
 - ✅ **CI/CD badge**: ![CI/CD](https://github.com/KB2410/mini-dex/actions/workflows/ci.yml/badge.svg)
-- 🔄 **Live demo**: Frontend deployment in progress
+- ✅ **Live demo**: [https://frontend-chi-wheat-42.vercel.app](https://frontend-chi-wheat-42.vercel.app)
 
 ---
 
