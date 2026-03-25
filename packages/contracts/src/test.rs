@@ -50,16 +50,16 @@ fn test_add_liquidity_first_provider() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract(token_a_admin.clone());
-    let token_b = env.register_stellar_asset_contract(token_b_admin.clone());
+    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
+    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
 
     // Initialize DEX
     client.initialize(&token_a, &token_b);
 
     // Create user and mint tokens
     let user = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_b);
 
     token_a_client.mint(&user, &1000);
     token_b_client.mint(&user, &1000);
@@ -95,15 +95,15 @@ fn test_add_liquidity_second_provider() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract(token_a_admin.clone());
-    let token_b = env.register_stellar_asset_contract(token_b_admin.clone());
+    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
+    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
 
     client.initialize(&token_a, &token_b);
 
     // First provider
     let user1 = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_b);
 
     token_a_client.mint(&user1, &1000);
     token_b_client.mint(&user1, &1000);
@@ -140,15 +140,15 @@ fn test_remove_liquidity() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract(token_a_admin.clone());
-    let token_b = env.register_stellar_asset_contract(token_b_admin.clone());
+    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
+    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
 
     client.initialize(&token_a, &token_b);
 
     // Add liquidity
     let user = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_b);
 
     token_a_client.mint(&user, &1000);
     token_b_client.mint(&user, &1000);
@@ -186,15 +186,15 @@ fn test_swap_a_to_b() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract(token_a_admin.clone());
-    let token_b = env.register_stellar_asset_contract(token_b_admin.clone());
+    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
+    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
 
     client.initialize(&token_a, &token_b);
 
     // Add initial liquidity
     let lp = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_b);
 
     token_a_client.mint(&lp, &10000);
     token_b_client.mint(&lp, &10000);
@@ -227,15 +227,15 @@ fn test_swap_b_to_a() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract(token_a_admin.clone());
-    let token_b = env.register_stellar_asset_contract(token_b_admin.clone());
+    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
+    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
 
     client.initialize(&token_a, &token_b);
 
     // Add initial liquidity
     let lp = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_b);
 
     token_a_client.mint(&lp, &10000);
     token_b_client.mint(&lp, &10000);
@@ -287,15 +287,15 @@ fn test_constant_product_maintained() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract(token_a_admin.clone());
-    let token_b = env.register_stellar_asset_contract(token_b_admin.clone());
+    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
+    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
 
     client.initialize(&token_a, &token_b);
 
     // Add liquidity
     let lp = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_b);
 
     token_a_client.mint(&lp, &10000);
     token_b_client.mint(&lp, &10000);
