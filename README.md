@@ -2,15 +2,68 @@
 
 A production-ready decentralized exchange (DEX) built on **Stellar Soroban** using **Rust**, featuring automated market maker (AMM) mechanics with constant product formula (x × y = k), comprehensive testing, and a modern Next.js frontend.
 
-🚀 **Live Demo**: Coming soon
+🚀 **Live Demo**: Coming soon (Frontend deployment in progress)
 
 ![CI/CD](https://github.com/KB2410/mini-dex/actions/workflows/ci.yml/badge.svg)
+
+## 📋 Stellar Mastery Challenge - Advanced Contract Patterns
+
+### Deployed Contract Information
+
+**Contract Address:** `CDEESHHROI4TRAEKGTQN4R5ZG33KEGYCUP7JKUZKFR3XRKFPHSDT3HYF`
+
+**Deployment Transaction:** [View on Stellar Explorer](https://stellar.expert/explorer/testnet/tx/8cc11ba447b5e5d8af971840ebdf8874073902ca79632e5193b7a347f8e90e9f)
+
+**Contract Explorer:** [View Contract](https://stellar.expert/explorer/testnet/contract/CDEESHHROI4TRAEKGTQN4R5ZG33KEGYCUP7JKUZKFR3XRKFPHSDT3HYF)
+
+**Network:** Stellar Testnet
+
+### Inter-Contract Calls
+
+✅ The MiniDex contract makes inter-contract calls to Stellar native token contracts using `soroban_sdk::token::StellarAssetClient` for:
+- Token transfers during swaps
+- Token transfers during liquidity provision
+- Token balance queries
+- Token minting in tests
+
+### Custom Pool Implementation
+
+✅ Custom AMM liquidity pool with:
+- Constant product formula (x × y = k)
+- LP token shares system
+- 0.3% swap fee mechanism
+- Proportional liquidity withdrawal
 
 ---
 
 ## 📱 Mobile Responsive
 
 Fully responsive design built with Tailwind CSS - works seamlessly on desktop, tablet, and mobile devices.
+
+![Mobile Responsive View](docs/mobile-responsive.png)
+
+---
+
+## ✅ Stellar Mastery Challenge Requirements
+
+### Advanced Contract Patterns
+- ✅ **Inter-contract calls**: MiniDex calls Stellar token contracts for transfers and balance queries
+- ✅ **Custom pool deployed**: AMM liquidity pool with constant product formula deployed to testnet
+- ✅ **Advanced patterns**: LP token shares, proportional withdrawals, fee mechanism
+
+### Production Readiness
+- ✅ **CI/CD running**: GitHub Actions pipeline with Rust linting, testing, and WASM compilation
+- ✅ **Mobile responsive**: Tailwind CSS responsive design (see screenshot above)
+- ✅ **22+ meaningful commits**: Full development history from Ethereum migration to Soroban
+
+### Documentation
+- ✅ **Public GitHub repository**: [github.com/KB2410/mini-dex](https://github.com/KB2410/mini-dex)
+- ✅ **Complete README**: Installation, deployment, API documentation
+- ✅ **Contract address**: `CDEESHHROI4TRAEKGTQN4R5ZG33KEGYCUP7JKUZKFR3XRKFPHSDT3HYF`
+- ✅ **Transaction hash**: [8cc11ba447b5e5d8af971840ebdf8874073902ca79632e5193b7a347f8e90e9f](https://stellar.expert/explorer/testnet/tx/8cc11ba447b5e5d8af971840ebdf8874073902ca79632e5193b7a347f8e90e9f)
+- ✅ **Mobile screenshot**: `docs/mobile-responsive.png`
+- ✅ **CI/CD badge**: ![CI/CD](https://github.com/KB2410/mini-dex/actions/workflows/ci.yml/badge.svg)
+- 🔄 **Live demo**: Frontend deployment in progress
 
 ---
 
