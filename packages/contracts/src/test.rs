@@ -58,8 +58,8 @@ fn test_add_liquidity_first_provider() {
 
     // Create user and mint tokens
     let user = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::TokenClient::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::TokenClient::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
 
     token_a_client.mint(&user, &1000);
     token_b_client.mint(&user, &1000);
@@ -102,8 +102,8 @@ fn test_add_liquidity_second_provider() {
 
     // First provider
     let user1 = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::TokenClient::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::TokenClient::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
 
     token_a_client.mint(&user1, &1000);
     token_b_client.mint(&user1, &1000);
@@ -147,8 +147,8 @@ fn test_remove_liquidity() {
 
     // Add liquidity
     let user = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::TokenClient::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::TokenClient::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
 
     token_a_client.mint(&user, &1000);
     token_b_client.mint(&user, &1000);
@@ -193,8 +193,8 @@ fn test_swap_a_to_b() {
 
     // Add initial liquidity
     let lp = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::TokenClient::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::TokenClient::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
 
     token_a_client.mint(&lp, &10000);
     token_b_client.mint(&lp, &10000);
@@ -234,8 +234,8 @@ fn test_swap_b_to_a() {
 
     // Add initial liquidity
     let lp = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::TokenClient::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::TokenClient::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
 
     token_a_client.mint(&lp, &10000);
     token_b_client.mint(&lp, &10000);
@@ -294,8 +294,8 @@ fn test_constant_product_maintained() {
 
     // Add liquidity
     let lp = Address::generate(&env);
-    let token_a_client = soroban_sdk::token::TokenClient::new(&env, &token_a);
-    let token_b_client = soroban_sdk::token::TokenClient::new(&env, &token_b);
+    let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
+    let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
 
     token_a_client.mint(&lp, &10000);
     token_b_client.mint(&lp, &10000);
@@ -314,4 +314,22 @@ fn test_constant_product_maintained() {
 
     // k should increase or stay same (due to fees)
     assert!(k_after >= k_before);
+}
+
+#[test]
+fn test_integer_sqrt() {
+    // Test the integer square root helper function
+    assert_eq!(integer_sqrt(0), 0);
+    assert_eq!(integer_sqrt(1), 1);
+    assert_eq!(integer_sqrt(4), 2);
+    assert_eq!(integer_sqrt(9), 3);
+    assert_eq!(integer_sqrt(16), 4);
+    assert_eq!(integer_sqrt(100), 10);
+    assert_eq!(integer_sqrt(10000), 100);
+    
+    // Test non-perfect squares
+    assert_eq!(integer_sqrt(5), 2);
+    assert_eq!(integer_sqrt(8), 2);
+    assert_eq!(integer_sqrt(15), 3);
+    assert_eq!(integer_sqrt(99), 9);
 }

@@ -2,6 +2,24 @@
 
 use soroban_sdk::{contract, contractimpl, contracttype, Address, Env};
 
+/// Integer square root using Babylonian method
+/// Required because floating-point math is not allowed in Soroban WASM
+fn integer_sqrt(y: i128) -> i128 {
+    if y > 3 {
+        let mut z = y;
+        let mut x = y / 2 + 1;
+        while x < z {
+            z = x;
+            x = (y / x + x) / 2;
+        }
+        z
+    } else if y != 0 {
+        1
+    } else {
+        0
+    }
+}
+
 /// Storage keys for the DEX contract
 #[contracttype]
 #[derive(Clone)]
@@ -72,8 +90,8 @@ impl MiniDex {
         // Calculate shares to mint
         let shares = if total_shares == 0 {
             // First liquidity provider: shares = sqrt(amount_a * amount_b)
-            // Simplified: use geometric mean
-            ((amount_a * amount_b) as f64).sqrt() as i128
+            // Use integer square root (no floating point allowed in WASM)
+            integer_sqrt(amount_a * amount_b)
         } else {
             // Subsequent providers: maintain ratio
             // shares = min(amount_a * total_shares / reserve_a, amount_b * total_shares / reserve_b)
@@ -87,8 +105,8 @@ impl MiniDex {
         }
 
         // Transfer tokens from user to contract
-        let token_a_client = soroban_sdk::token::TokenClient::new(&env, &token_a);
-        let token_b_client = soroban_sdk::token::TokenClient::new(&env, &token_b);
+        let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
+        let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
         
         token_a_client.transfer(&user, &env.current_contract_address(), &amount_a);
         token_b_client.transfer(&user, &env.current_contract_address(), &amount_b);
@@ -155,8 +173,8 @@ impl MiniDex {
         let token_b: Address = env.storage().instance().get(&DataKey::TokenB).unwrap();
 
         // Transfer tokens back to user
-        let token_a_client = soroban_sdk::token::TokenClient::new(&env, &token_a);
-        let token_b_client = soroban_sdk::token::TokenClient::new(&env, &token_b);
+        let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
+        let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
         
         token_a_client.transfer(&env.current_contract_address(), &user, &amount_a);
         token_b_client.transfer(&env.current_contract_address(), &user, &amount_b);
@@ -224,11 +242,11 @@ impl MiniDex {
         }
 
         // Transfer token_in from user to contract
-        let token_in_client = soroban_sdk::token::TokenClient::new(&env, &token_in);
+        let token_in_client = soroban_sdk::token::Client::new(&env, &token_in);
         token_in_client.transfer(&user, &env.current_contract_address(), &amount_in);
 
         // Transfer token_out from contract to user
-        let token_out_client = soroban_sdk::token::TokenClient::new(&env, &token_out);
+        let token_out_client = soroban_sdk::token::Client::new(&env, &token_out);
         token_out_client.transfer(&env.current_contract_address(), &user, &amount_out);
 
         // Update reserves
