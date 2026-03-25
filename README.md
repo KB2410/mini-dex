@@ -1,8 +1,8 @@
-# Mini-DEX - Advanced Decentralized Exchange
+# Mini-DEX - Stellar Soroban Decentralized Exchange
 
-A production-ready decentralized exchange (DEX) for swapping ETH to GEMI tokens on Sepolia testnet, featuring automated market maker (AMM) mechanics, property-based testing, and comprehensive security measures.
+A production-ready decentralized exchange (DEX) built on **Stellar Soroban** using **Rust**, featuring automated market maker (AMM) mechanics with constant product formula (x × y = k), comprehensive testing, and a modern Next.js frontend.
 
-🚀 **Live Demo**: [https://frontend-chi-wheat-42.vercel.app](https://frontend-chi-wheat-42.vercel.app)
+🚀 **Live Demo**: Coming soon
 
 ![CI/CD](https://github.com/KB2410/mini-dex/actions/workflows/ci.yml/badge.svg)
 
@@ -12,99 +12,73 @@ A production-ready decentralized exchange (DEX) for swapping ETH to GEMI tokens 
 
 Fully responsive design built with Tailwind CSS - works seamlessly on desktop, tablet, and mobile devices.
 
-<p align="center">
-  <img src="docs/mobile-responsive.png" alt="Mini-DEX Mobile Responsive View" width="375" />
-</p>
-
----
-
-## 🔗 Deployed Contracts (Sepolia Testnet)
-
-| Contract | Address | Etherscan |
-|----------|---------|-----------|
-| **GeminiToken** | `0xEB9B3c675aD7419bcE73fD8eb2d5C9BCDd8a8FD7` | [View](https://sepolia.etherscan.io/address/0xEB9B3c675aD7419bcE73fD8eb2d5C9BCDd8a8FD7) |
-| **SimplePool** | `0x7D7ff9c51eb5c3dcbeD2751c6F3bd70586eB22Db` | [View](https://sepolia.etherscan.io/address/0x7D7ff9c51eb5c3dcbeD2751c6F3bd70586eB22Db) |
-
-**Deployment Transaction**: [`0xd1a55f2ba930e24385c2477974daeae52035fdfa6b1d7f7a66ab0d2f9fa8efd3`](https://sepolia.etherscan.io/tx/0xd1a55f2ba930e24385c2477974daeae52035fdfa6b1d7f7a66ab0d2f9fa8efd3)
-
 ---
 
 ## 🎯 Advanced Features
 
-### Smart Contract Features
-- ✅ **Inter-contract Calls**: SimplePool interacts with GeminiToken for transfers
-- ✅ **Custom ERC-20 Token**: Gas-optimized with custom errors
-- ✅ **AMM Liquidity Pool**: Constant product formula (x * y = k)
-- ✅ **Reentrancy Protection**: OpenZeppelin ReentrancyGuard
-- ✅ **Custom Errors**: Gas-efficient error handling with diagnostic parameters
-- ✅ **Event Streaming**: Real-time pool events (SwapExecuted, LiquidityAdded, LiquidityRemoved)
+### Smart Contract Features (Soroban/Rust)
+- ✅ **Constant Product AMM**: x × y = k formula
+- ✅ **0.3% Swap Fee**: Industry-standard fee structure
+- ✅ **Liquidity Provision**: Mint/burn LP tokens
+- ✅ **Native Authentication**: Soroban `require_auth()` pattern
+- ✅ **Optimized Storage**: Instance + Persistent storage design
+- ✅ **i128 Precision**: Native Stellar precision handling
 
 ### Frontend Features
 - ✅ **Real-time Updates**: Live pool statistics and event monitoring
 - ✅ **Mobile Responsive**: Tailwind CSS with responsive breakpoints
-- ✅ **Wallet Integration**: MetaMask, WalletConnect, Coinbase Wallet
+- ✅ **Wallet Integration**: Freighter wallet support
 - ✅ **Error Tracking**: Sentry integration for production monitoring
-- ✅ **Network Switching**: Automatic Sepolia network detection
+- ✅ **Network Switching**: Automatic Stellar testnet detection
 
 ### Development Features
-- ✅ **Property-Based Testing**: 14 correctness properties with fast-check
+- ✅ **Comprehensive Testing**: Unit tests with Soroban testutils
 - ✅ **CI/CD Pipeline**: GitHub Actions with parallel execution
 - ✅ **Monorepo Structure**: Turborepo for efficient builds
-- ✅ **TypeScript**: Full type safety across contracts and frontend
+- ✅ **TypeScript**: Full type safety across frontend
 
 ---
 
 ## 🔒 Security Features
 
-- ✅ **Reentrancy Protection**: OpenZeppelin ReentrancyGuard on all state-changing functions
-- ✅ **Custom Errors**: Gas-optimized error handling with diagnostic parameters
+- ✅ **Authentication Required**: All state-changing operations require `user.require_auth()`
 - ✅ **Input Validation**: Comprehensive checks on all contract functions
-- ✅ **Checks-Effects-Interactions**: State updated before external calls
+- ✅ **Overflow Protection**: i128 type with built-in safety
+- ✅ **Initialization Guard**: Contract can only be initialized once
+- ✅ **Reentrancy Protection**: Soroban native protection
 - ✅ **Secure API Keys**: All sensitive keys in environment variables
-- ✅ **Overflow Protection**: Solidity 0.8.20+ built-in safety
-- ✅ **Zero-Address Checks**: Prevents transfers to zero address
-- ✅ **Immutable Variables**: Critical addresses cannot be changed
 
 ---
 
 ## 🧪 Testing
 
 ### Test Coverage
-- **Unit Tests**: 25+ tests covering all contract functions
-- **Property-Based Tests**: 14 universal correctness properties
+- **Unit Tests**: 12+ tests covering all contract functions
 - **Integration Tests**: End-to-end swap workflows
 - **Frontend Tests**: Component and hook testing
 
 ### Correctness Properties Tested
-1. Token Balance Conservation
-2. Transfer Insufficient Balance Error
-3. TransferFrom Insufficient Allowance Error
-4. Liquidity Withdrawal Proportionality
-5. Non-Negative Reserve Invariant
-6. Insufficient Liquidity Error
-7. Constant Product Formula
-8. Atomic Swap Execution
-9. Gas Consumption Limit (<100k per swap)
-10. Sequential Reentrancy Lock Release
-11. Custom Error Parameters
-12. Frontend Swap Estimate Accuracy
-13. Transaction Error Categorization
-14. Sentry Error Context Completeness
+1. Initialization (single-time only)
+2. First liquidity provider (geometric mean)
+3. Subsequent liquidity providers (ratio maintenance)
+4. Liquidity removal (proportional withdrawal)
+5. Token swaps (A→B and B→A)
+6. Constant product formula (k maintenance)
+7. Fee application (0.3% on swaps)
+8. Authentication requirements
+9. Edge cases (zero liquidity, insufficient shares)
 
 ### Run Tests
 
 ```bash
-# Install dependencies
-npm install
+# Navigate to contracts
+cd packages/contracts
 
 # Run all tests
-npm run test
+cargo test
 
-# Run with gas reporting
-REPORT_GAS=true npm run test
-
-# Run property-based tests
-npm run test:properties
+# Run with output
+cargo test -- --nocapture
 ```
 
 ---
@@ -112,9 +86,10 @@ npm run test:properties
 ## 🚀 Quick Start
 
 ### Prerequisites
+- Rust >= 1.70.0
+- Soroban CLI
 - Node.js >= 20.0.0
-- MetaMask wallet
-- Sepolia ETH (for testing)
+- Freighter wallet (for frontend)
 
 ### Installation
 
@@ -123,29 +98,64 @@ npm run test:properties
 git clone https://github.com/KB2410/mini-dex.git
 cd mini-dex
 
-# Install dependencies
-npm install
+# Install Rust (if needed)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-# Build all packages
-npm run build
+# Install Soroban CLI
+cargo install --locked soroban-cli
+
+# Add wasm32 target
+rustup target add wasm32-unknown-unknown
+
+# Install frontend dependencies
+cd packages/frontend
+npm install
 ```
 
-### Local Development
+### Build Smart Contract
 
 ```bash
-# Start local Hardhat network
 cd packages/contracts
-npx hardhat node
 
-# Deploy contracts locally (in new terminal)
-npx hardhat run scripts/deploy-local.ts --network localhost
+# Build
+cargo build --target wasm32-unknown-unknown --release
 
-# Start frontend (in new terminal)
+# Run tests
+cargo test
+
+# Optimize for deployment
+soroban contract optimize --wasm target/wasm32-unknown-unknown/release/mini_dex.wasm
+```
+
+### Deploy to Stellar Testnet
+
+```bash
+# Configure network
+soroban network add testnet \
+  --rpc-url https://soroban-testnet.stellar.org:443 \
+  --network-passphrase "Test SDF Network ; September 2015"
+
+# Generate identity
+soroban keys generate deployer --network testnet
+
+# Fund account
+soroban keys fund deployer --network testnet
+
+# Deploy contract
+soroban contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/mini_dex.wasm \
+  --source deployer \
+  --network testnet
+```
+
+### Start Frontend
+
+```bash
 cd packages/frontend
 npm run dev
 ```
 
-Visit http://localhost:3000 and connect MetaMask to localhost:8545
+Visit http://localhost:3000
 
 ---
 
@@ -154,11 +164,12 @@ Visit http://localhost:3000 and connect MetaMask to localhost:8545
 ```
 mini-dex/
 ├── packages/
-│   ├── contracts/          # Smart contracts
-│   │   ├── contracts/      # Solidity files
-│   │   ├── test/          # Contract tests
-│   │   ├── scripts/       # Deployment scripts
-│   │   └── hardhat.config.ts
+│   ├── contracts/          # Soroban smart contract (Rust)
+│   │   ├── src/
+│   │   │   ├── lib.rs     # Main contract logic
+│   │   │   └── test.rs    # Unit tests
+│   │   ├── Cargo.toml     # Rust dependencies
+│   │   └── README.md      # Contract documentation
 │   └── frontend/          # Next.js application
 │       ├── app/           # App router pages
 │       ├── components/    # React components
@@ -173,71 +184,97 @@ mini-dex/
 
 ## 🛠️ Technology Stack
 
-### Smart Contracts
-- Solidity 0.8.20+
-- Hardhat
-- OpenZeppelin Contracts
-- Ethers.js v6
-- Fast-check (property-based testing)
+### Smart Contract
+- Rust (no_std)
+- Soroban SDK 20.0.0
+- Stellar Network
+- WASM compilation target
 
 ### Frontend
 - Next.js 14 (App Router)
 - React 18
 - TypeScript
 - Tailwind CSS
-- Wagmi v2 (Web3 React Hooks)
-- Viem (Ethereum interactions)
-- TanStack Query (data fetching)
+- Stellar SDK
+- Freighter Wallet Integration
 
 ### Infrastructure
 - Turborepo (monorepo)
 - GitHub Actions (CI/CD)
 - Vercel (frontend hosting)
-- Infura (RPC provider)
 - Sentry (error tracking)
 
 ---
 
-## 📝 Environment Variables
+## 📝 Smart Contract API
 
-### Smart Contracts (`packages/contracts/.env`)
-```bash
-SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_PROJECT_ID
-PRIVATE_KEY=your_private_key_here
-ETHERSCAN_API_KEY=your_etherscan_api_key
+### Core Functions
+
+```rust
+// Initialize the DEX (one-time only)
+pub fn initialize(env: Env, token_a: Address, token_b: Address)
+
+// Add liquidity and receive LP shares
+pub fn add_liquidity(env: Env, user: Address, amount_a: i128, amount_b: i128) -> i128
+
+// Remove liquidity by burning LP shares
+pub fn remove_liquidity(env: Env, user: Address, shares: i128) -> (i128, i128)
+
+// Swap tokens using constant product formula
+pub fn swap(env: Env, user: Address, amount_in: i128, path_is_a_to_b: bool) -> i128
+
+// View functions
+pub fn get_reserves(env: Env) -> (i128, i128)
+pub fn get_user_shares(env: Env, user: Address) -> i128
+pub fn get_total_shares(env: Env) -> i128
 ```
 
-### Frontend (`packages/frontend/.env.local`)
-```bash
-NEXT_PUBLIC_GEMINI_TOKEN_ADDRESS=0xEB9B3c675aD7419bcE73fD8eb2d5C9BCDd8a8FD7
-NEXT_PUBLIC_SIMPLE_POOL_ADDRESS=0x7D7ff9c51eb5c3dcbeD2751c6F3bd70586eB22Db
-NEXT_PUBLIC_SENTRY_DSN=your_sentry_dsn
+---
+
+## 📈 AMM Math
+
+### Constant Product Formula
+
+```
+x * y = k
+
+where:
+- x = reserve of token A
+- y = reserve of token B
+- k = constant product (maintained after swaps)
+```
+
+### Swap Calculation (0.3% fee)
+
+```
+amount_out = (amount_in * 997 * reserve_out) / (reserve_in * 1000 + amount_in * 997)
+```
+
+### LP Shares
+
+**First provider:**
+```
+shares = sqrt(amount_a * amount_b)
+```
+
+**Subsequent providers:**
+```
+shares = min(
+  amount_a * total_shares / reserve_a,
+  amount_b * total_shares / reserve_b
+)
 ```
 
 ---
 
 ## 🔄 CI/CD Pipeline
 
-The project uses GitHub Actions for continuous integration and deployment:
+The project uses GitHub Actions for continuous integration:
 
-- ✅ **Linting**: Solhint (Solidity) + ESLint (TypeScript)
-- ✅ **Testing**: Unit tests, property tests, integration tests
-- ✅ **Building**: Parallel builds with Turborepo
-- ✅ **Gas Reporting**: Automatic gas consumption analysis
-- ✅ **Deployment**: Automated Sepolia deployment on main branch
-- ✅ **Verification**: Automatic Etherscan verification
-
----
-
-## 📈 Gas Optimization
-
-Average gas consumption:
-- `swapEthForToken`: ~85,000 gas
-- `addLiquidity`: ~120,000 gas
-- `removeLiquidity`: ~95,000 gas
-- `transfer` (GeminiToken): ~52,000 gas
-
-All functions use custom errors for gas efficiency.
+- ✅ **Linting**: Rust clippy + cargo fmt
+- ✅ **Testing**: Cargo test with full coverage
+- ✅ **Building**: WASM compilation
+- ✅ **Frontend**: Next.js build and lint
 
 ---
 
@@ -261,43 +298,38 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## 🙏 Acknowledgments
 
-- OpenZeppelin for secure contract libraries
-- Hardhat for development environment
-- Fast-check for property-based testing framework
-- Wagmi for Web3 React hooks
+- Stellar Development Foundation for Soroban
+- Rust community for excellent tooling
+- Soroban SDK team for comprehensive documentation
 
 ---
 
----
+## 🚀 Quick Deployment Steps
 
-## � Quick Deployment Steps
-
-### 1. Push to GitHub (5 min)
+### 1. Build Contract
 ```bash
-git init
-git add .
-git commit -m "Complete Mini-DEX with Sepolia deployment"
-# Create public repo on GitHub, then:
-git remote add origin https://github.com/KB2410/mini-dex.git
-git branch -M main
-git push -u origin main
+cd packages/contracts
+cargo build --target wasm32-unknown-unknown --release
+soroban contract optimize --wasm target/wasm32-unknown-unknown/release/mini_dex.wasm
 ```
 
-### 2. Deploy to Vercel (10 min)
+### 2. Deploy to Stellar Testnet
+```bash
+soroban contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/mini_dex.wasm \
+  --source deployer \
+  --network testnet
+```
+
+### 3. Deploy Frontend to Vercel
 1. Go to https://vercel.com and sign in with GitHub
 2. Import your repository
 3. Set root directory: `packages/frontend`
 4. Add environment variables:
-   - `NEXT_PUBLIC_GEMINI_TOKEN_ADDRESS=0xEB9B3c675aD7419bcE73fD8eb2d5C9BCDd8a8FD7`
-   - `NEXT_PUBLIC_SIMPLE_POOL_ADDRESS=0x7D7ff9c51eb5c3dcbeD2751c6F3bd70586eB22Db`
-   - `NEXT_PUBLIC_SENTRY_DSN=https://06976b6e232832994d0e1b66f85471eb@o4511007339053056.ingest.de.sentry.io/4511007349014608`
+   - `NEXT_PUBLIC_CONTRACT_ADDRESS=<YOUR_CONTRACT_ID>`
+   - `NEXT_PUBLIC_NETWORK=testnet`
+   - `NEXT_PUBLIC_SENTRY_DSN=<YOUR_SENTRY_DSN>`
 5. Click Deploy
-
-### 3. Update README
-- Replace `YOUR_USERNAME/YOUR_REPO` with your GitHub username and repo name
-- Add your Vercel production URL
-- Take mobile screenshot and add to README
-- Commit and push changes
 
 ---
 

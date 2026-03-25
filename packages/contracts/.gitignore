@@ -1,13 +1,22 @@
-node_modules
+# Rust/Cargo
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# Soroban
+.soroban/
+
+# Environment files
 .env
-coverage
-coverage.json
-typechain
-typechain-types
+.env.local
+.env.*.local
 
-# Hardhat files
-cache
-artifacts
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Build files
-dist
+# OS
+.DS_Store
