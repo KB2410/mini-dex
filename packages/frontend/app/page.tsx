@@ -16,11 +16,11 @@
 import { WalletConnect } from '@/components/WalletConnect';
 import { SwapWidget } from '@/components/SwapWidget';
 import { PoolStats } from '@/components/PoolStats';
-import { GEMINI_TOKEN_ADDRESS, SIMPLE_POOL_ADDRESS } from '@/lib/contracts';
 
 export default function HomePage() {
-  // Etherscan base URL for Sepolia
-  const etherscanBase = 'https://sepolia.etherscan.io';
+  // Stellar Explorer base URL for testnet
+  const stellarExplorerBase = 'https://stellar.expert/explorer/testnet';
+  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || 'CDEESHHROI4TRAEKGTQN4R5ZG33KEGYCUP7JKUZKFR3XRKFPHSDT3HYF';
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -64,10 +64,10 @@ export default function HomePage() {
         {/* Hero Section */}
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-            Swap ETH for GEMI
+            Swap Stellar Tokens
           </h2>
           <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Trade Ethereum for Gemini tokens instantly on Sepolia testnet with our automated market maker
+            Trade Stellar tokens instantly on testnet with our Soroban-powered automated market maker
           </p>
         </div>
 
@@ -163,57 +163,26 @@ export default function HomePage() {
           {/* Contract Links */}
           <div className="max-w-4xl mx-auto">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4 text-center sm:text-left">
-              Deployed Contracts (Sepolia Testnet)
+              Deployed Contract (Stellar Testnet)
             </h3>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* GeminiToken Contract */}
+            <div className="grid grid-cols-1 gap-4">
+              {/* MiniDex Contract */}
               <a
-                href={`${etherscanBase}/address/${GEMINI_TOKEN_ADDRESS}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg transition-colors group"
-              >
-                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">G</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
-                    GeminiToken (GEMI)
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate font-mono">
-                    {GEMINI_TOKEN_ADDRESS}
-                  </p>
-                </div>
-                <svg
-                  className="w-5 h-5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 flex-shrink-0"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-
-              {/* SimplePool Contract */}
-              <a
-                href={`${etherscanBase}/address/${SIMPLE_POOL_ADDRESS}`}
+                href={`${stellarExplorerBase}/contract/${contractAddress}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg transition-colors group"
               >
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">P</span>
+                  <span className="text-white text-sm font-bold">D</span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
-                    SimplePool
+                    MiniDex (Soroban)
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate font-mono">
-                    {SIMPLE_POOL_ADDRESS}
+                    {contractAddress}
                   </p>
                 </div>
                 <svg
@@ -235,26 +204,26 @@ export default function HomePage() {
           <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center sm:text-left">
-                © 2024 Mini-DEX. Built with Next.js, Wagmi, and Viem.
+                © 2024 Mini-DEX. Built with Next.js and Stellar Soroban.
               </p>
               
               <div className="flex items-center gap-4">
                 <a
-                  href="https://sepolia.etherscan.io"
+                  href="https://stellar.expert/explorer/testnet"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
-                  Etherscan
+                  Stellar Explorer
                 </a>
                 <span className="text-gray-300 dark:text-gray-700">•</span>
                 <a
-                  href="https://sepoliafaucet.com"
+                  href="https://laboratory.stellar.org/#account-creator?network=test"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
-                  Get Testnet ETH
+                  Get Testnet XLM
                 </a>
               </div>
             </div>

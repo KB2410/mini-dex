@@ -12,9 +12,9 @@ import { Providers } from './providers';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Mini-DEX | Decentralized Exchange',
-  description: 'Swap ETH for GEMI tokens on Sepolia testnet',
-  keywords: ['DEX', 'Ethereum', 'Swap', 'DeFi', 'Sepolia'],
+  title: 'Mini-DEX | Stellar Soroban DEX',
+  description: 'Swap Stellar tokens on testnet with Soroban smart contracts',
+  keywords: ['DEX', 'Stellar', 'Soroban', 'Swap', 'DeFi', 'Rust', 'AMM'],
   authors: [{ name: 'Mini-DEX Team' }],
 };
 

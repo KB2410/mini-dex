@@ -8,10 +8,59 @@ on:
 
 env:
   NODE_VERSION: '20'
+  RUST_VERSION: 'stable'
 
 jobs:
-  lint-and-test:
-    name: Lint & Test
+  lint-and-test-contracts:
+    name: Lint & Test Soroban Contracts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          target: wasm32-unknown-unknown
+          override: true
+          components: rustfmt, clippy
+
+      - name: Cache Cargo
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            packages/contracts/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Lint Rust code
+        run: |
+          cd packages/contracts
+          cargo fmt -- --check
+          cargo clippy -- -D warnings
+
+      - name: Build Soroban contract
+        run: |
+          cd packages/contracts
+          cargo build --target wasm32-unknown-unknown --release
+
+      - name: Run contract tests
+        run: |
+          cd packages/contracts
+          cargo test
+
+      - name: Optimize WASM
+        run: |
+          cd packages/contracts
+          cargo install --locked soroban-cli || true
+          soroban contract optimize --wasm target/wasm32-unknown-unknown/release/mini_dex.wasm || true
+
+  lint-and-build-frontend:
+    name: Lint & Build Frontend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -26,38 +75,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint Solidity
-        run: |
-          cd packages/contracts
-          npx solhint 'contracts/**/*.sol'
-
-      - name: Lint TypeScript (Contracts)
-        run: |
-          cd packages/contracts
-          npx eslint '**/*.ts' --max-warnings 50
-
-      - name: Compile contracts
-        run: |
-          cd packages/contracts
-          npx hardhat compile
-
-      - name: Run contract tests
-        run: |
-          cd packages/contracts
-          npx hardhat test
-
-      - name: Generate gas report
-        run: |
-          cd packages/contracts
-          REPORT_GAS=true npx hardhat test > gas-report.txt 2>&1 || true
-
-      - name: Upload gas report
-        uses: actions/upload-artifact@v4
-        with:
-          name: gas-report
-          path: packages/contracts/gas-report.txt
-          if-no-files-found: warn
-
       - name: Lint Frontend
         continue-on-error: true
         run: |
@@ -70,8 +87,8 @@ jobs:
           cd packages/frontend
           npm run build
         env:
-          NEXT_PUBLIC_SIMPLE_POOL_ADDRESS: '0x7D7ff9c51eb5c3dcbeD2751c6F3bd70586eB22Db'
-          NEXT_PUBLIC_GEMINI_TOKEN_ADDRESS: '0xEB9B3c675aD7419bcE73fD8eb2d5C9BCDd8a8FD7'
+          NEXT_PUBLIC_CONTRACT_ADDRESS: 'CDEESHHROI4TRAEKGTQN4R5ZG33KEGYCUP7JKUZKFR3XRKFPHSDT3HYF'
+          NEXT_PUBLIC_NETWORK: 'testnet'
           NEXT_PUBLIC_SENTRY_DSN: ''
           SENTRY_ORG: ''
           SENTRY_PROJECT: ''
