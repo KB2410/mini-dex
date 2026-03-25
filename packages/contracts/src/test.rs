@@ -266,13 +266,21 @@ fn test_swap_with_no_liquidity_fails() {
     let contract_id = env.register_contract(None, MiniDex);
     let client = MiniDexClient::new(&env, &contract_id);
 
-    let token_a = Address::generate(&env);
-    let token_b = Address::generate(&env);
+    // Register mock tokens
+    let token_a_admin = Address::generate(&env);
+    let token_b_admin = Address::generate(&env);
+    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
+    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
 
     client.initialize(&token_a, &token_b);
 
     let user = Address::generate(&env);
-    // Should panic - no liquidity
+    
+    // FIX: Mint tokens to the user so the transfer doesn't fail first
+    let token_a_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_a);
+    token_a_client.mint(&user, &100);
+    
+    // Should panic - no liquidity in the DEX reserves
     client.swap(&user, &10, &true);
 }
 

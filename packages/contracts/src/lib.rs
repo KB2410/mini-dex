@@ -4,7 +4,7 @@ use soroban_sdk::{contract, contractimpl, contracttype, Address, Env};
 
 /// Integer square root using Babylonian method
 /// Required because floating-point math is not allowed in Soroban WASM
-fn integer_sqrt(y: i128) -> i128 {
+pub fn integer_sqrt(y: i128) -> i128 {
     if y > 3 {
         let mut z = y;
         let mut x = y / 2 + 1;
