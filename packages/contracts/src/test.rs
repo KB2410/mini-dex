@@ -50,8 +50,12 @@ fn test_add_liquidity_first_provider() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
-    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
+    let token_a = env
+        .register_stellar_asset_contract_v2(token_a_admin.clone())
+        .address();
+    let token_b = env
+        .register_stellar_asset_contract_v2(token_b_admin.clone())
+        .address();
 
     // Initialize DEX
     client.initialize(&token_a, &token_b);
@@ -95,8 +99,12 @@ fn test_add_liquidity_second_provider() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
-    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
+    let token_a = env
+        .register_stellar_asset_contract_v2(token_a_admin.clone())
+        .address();
+    let token_b = env
+        .register_stellar_asset_contract_v2(token_b_admin.clone())
+        .address();
 
     client.initialize(&token_a, &token_b);
 
@@ -113,7 +121,7 @@ fn test_add_liquidity_second_provider() {
     let user2 = Address::generate(&env);
     token_a_client.mint(&user2, &1000);
     token_b_client.mint(&user2, &1000);
-    
+
     let shares = client.add_liquidity(&user2, &50, &50);
 
     // Verify shares: (50 * 100) / 100 = 50
@@ -140,8 +148,12 @@ fn test_remove_liquidity() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
-    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
+    let token_a = env
+        .register_stellar_asset_contract_v2(token_a_admin.clone())
+        .address();
+    let token_b = env
+        .register_stellar_asset_contract_v2(token_b_admin.clone())
+        .address();
 
     client.initialize(&token_a, &token_b);
 
@@ -186,8 +198,12 @@ fn test_swap_a_to_b() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
-    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
+    let token_a = env
+        .register_stellar_asset_contract_v2(token_a_admin.clone())
+        .address();
+    let token_b = env
+        .register_stellar_asset_contract_v2(token_b_admin.clone())
+        .address();
 
     client.initialize(&token_a, &token_b);
 
@@ -227,8 +243,12 @@ fn test_swap_b_to_a() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
-    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
+    let token_a = env
+        .register_stellar_asset_contract_v2(token_a_admin.clone())
+        .address();
+    let token_b = env
+        .register_stellar_asset_contract_v2(token_b_admin.clone())
+        .address();
 
     client.initialize(&token_a, &token_b);
 
@@ -269,17 +289,21 @@ fn test_swap_with_no_liquidity_fails() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
-    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
+    let token_a = env
+        .register_stellar_asset_contract_v2(token_a_admin.clone())
+        .address();
+    let token_b = env
+        .register_stellar_asset_contract_v2(token_b_admin.clone())
+        .address();
 
     client.initialize(&token_a, &token_b);
 
     let user = Address::generate(&env);
-    
+
     // FIX: Mint tokens to the user so the transfer doesn't fail first
     let token_a_client = soroban_sdk::token::StellarAssetClient::new(&env, &token_a);
     token_a_client.mint(&user, &100);
-    
+
     // Should panic - no liquidity in the DEX reserves
     client.swap(&user, &10, &true);
 }
@@ -295,8 +319,12 @@ fn test_constant_product_maintained() {
     // Register mock tokens
     let token_a_admin = Address::generate(&env);
     let token_b_admin = Address::generate(&env);
-    let token_a = env.register_stellar_asset_contract_v2(token_a_admin.clone()).address();
-    let token_b = env.register_stellar_asset_contract_v2(token_b_admin.clone()).address();
+    let token_a = env
+        .register_stellar_asset_contract_v2(token_a_admin.clone())
+        .address();
+    let token_b = env
+        .register_stellar_asset_contract_v2(token_b_admin.clone())
+        .address();
 
     client.initialize(&token_a, &token_b);
 
@@ -334,7 +362,7 @@ fn test_integer_sqrt() {
     assert_eq!(integer_sqrt(16), 4);
     assert_eq!(integer_sqrt(100), 10);
     assert_eq!(integer_sqrt(10000), 100);
-    
+
     // Test non-perfect squares
     assert_eq!(integer_sqrt(5), 2);
     assert_eq!(integer_sqrt(8), 2);

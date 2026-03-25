@@ -50,26 +50,21 @@ impl MiniDex {
         // Store token addresses
         env.storage().instance().set(&DataKey::TokenA, &token_a);
         env.storage().instance().set(&DataKey::TokenB, &token_b);
-        
+
         // Initialize reserves to 0
         env.storage().instance().set(&DataKey::ReserveA, &0i128);
         env.storage().instance().set(&DataKey::ReserveB, &0i128);
-        
+
         // Initialize total shares to 0
         env.storage().instance().set(&DataKey::TotalShares, &0i128);
-        
+
         // Mark as initialized
         env.storage().instance().set(&DataKey::Initialized, &true);
     }
 
     /// Add liquidity to the pool
     /// Returns the number of LP shares minted
-    pub fn add_liquidity(
-        env: Env,
-        user: Address,
-        amount_a: i128,
-        amount_b: i128,
-    ) -> i128 {
+    pub fn add_liquidity(env: Env, user: Address, amount_a: i128, amount_b: i128) -> i128 {
         // Require user authentication
         user.require_auth();
 
@@ -97,7 +92,11 @@ impl MiniDex {
             // shares = min(amount_a * total_shares / reserve_a, amount_b * total_shares / reserve_b)
             let shares_a = (amount_a * total_shares) / reserve_a;
             let shares_b = (amount_b * total_shares) / reserve_b;
-            if shares_a < shares_b { shares_a } else { shares_b }
+            if shares_a < shares_b {
+                shares_a
+            } else {
+                shares_b
+            }
         };
 
         if shares <= 0 {
@@ -107,16 +106,22 @@ impl MiniDex {
         // Transfer tokens from user to contract
         let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
         let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
-        
+
         token_a_client.transfer(&user, &env.current_contract_address(), &amount_a);
         token_b_client.transfer(&user, &env.current_contract_address(), &amount_b);
 
         // Update reserves
-        env.storage().instance().set(&DataKey::ReserveA, &(reserve_a + amount_a));
-        env.storage().instance().set(&DataKey::ReserveB, &(reserve_b + amount_b));
+        env.storage()
+            .instance()
+            .set(&DataKey::ReserveA, &(reserve_a + amount_a));
+        env.storage()
+            .instance()
+            .set(&DataKey::ReserveB, &(reserve_b + amount_b));
 
         // Update total shares
-        env.storage().instance().set(&DataKey::TotalShares, &(total_shares + shares));
+        env.storage()
+            .instance()
+            .set(&DataKey::TotalShares, &(total_shares + shares));
 
         // Update user shares
         let user_shares_key = DataKey::UserShare(user.clone());
@@ -175,16 +180,22 @@ impl MiniDex {
         // Transfer tokens back to user
         let token_a_client = soroban_sdk::token::Client::new(&env, &token_a);
         let token_b_client = soroban_sdk::token::Client::new(&env, &token_b);
-        
+
         token_a_client.transfer(&env.current_contract_address(), &user, &amount_a);
         token_b_client.transfer(&env.current_contract_address(), &user, &amount_b);
 
         // Update reserves
-        env.storage().instance().set(&DataKey::ReserveA, &(reserve_a - amount_a));
-        env.storage().instance().set(&DataKey::ReserveB, &(reserve_b - amount_b));
+        env.storage()
+            .instance()
+            .set(&DataKey::ReserveA, &(reserve_a - amount_a));
+        env.storage()
+            .instance()
+            .set(&DataKey::ReserveB, &(reserve_b - amount_b));
 
         // Update total shares
-        env.storage().instance().set(&DataKey::TotalShares, &(total_shares - shares));
+        env.storage()
+            .instance()
+            .set(&DataKey::TotalShares, &(total_shares - shares));
 
         // Update user shares
         env.storage()
@@ -198,12 +209,7 @@ impl MiniDex {
     /// Applies 0.3% fee
     /// path_is_a_to_b: true = swap A for B, false = swap B for A
     /// Returns amount_out
-    pub fn swap(
-        env: Env,
-        user: Address,
-        amount_in: i128,
-        path_is_a_to_b: bool,
-    ) -> i128 {
+    pub fn swap(env: Env, user: Address, amount_in: i128, path_is_a_to_b: bool) -> i128 {
         // Require user authentication
         user.require_auth();
 
@@ -251,11 +257,19 @@ impl MiniDex {
 
         // Update reserves
         if path_is_a_to_b {
-            env.storage().instance().set(&DataKey::ReserveA, &(reserve_a + amount_in));
-            env.storage().instance().set(&DataKey::ReserveB, &(reserve_b - amount_out));
+            env.storage()
+                .instance()
+                .set(&DataKey::ReserveA, &(reserve_a + amount_in));
+            env.storage()
+                .instance()
+                .set(&DataKey::ReserveB, &(reserve_b - amount_out));
         } else {
-            env.storage().instance().set(&DataKey::ReserveB, &(reserve_b + amount_in));
-            env.storage().instance().set(&DataKey::ReserveA, &(reserve_a - amount_out));
+            env.storage()
+                .instance()
+                .set(&DataKey::ReserveB, &(reserve_b + amount_in));
+            env.storage()
+                .instance()
+                .set(&DataKey::ReserveA, &(reserve_a - amount_out));
         }
 
         amount_out
@@ -263,8 +277,16 @@ impl MiniDex {
 
     /// Get reserve amounts
     pub fn get_reserves(env: Env) -> (i128, i128) {
-        let reserve_a: i128 = env.storage().instance().get(&DataKey::ReserveA).unwrap_or(0);
-        let reserve_b: i128 = env.storage().instance().get(&DataKey::ReserveB).unwrap_or(0);
+        let reserve_a: i128 = env
+            .storage()
+            .instance()
+            .get(&DataKey::ReserveA)
+            .unwrap_or(0);
+        let reserve_b: i128 = env
+            .storage()
+            .instance()
+            .get(&DataKey::ReserveB)
+            .unwrap_or(0);
         (reserve_a, reserve_b)
     }
 
@@ -279,7 +301,10 @@ impl MiniDex {
 
     /// Get total LP shares
     pub fn get_total_shares(env: Env) -> i128 {
-        env.storage().instance().get(&DataKey::TotalShares).unwrap_or(0)
+        env.storage()
+            .instance()
+            .get(&DataKey::TotalShares)
+            .unwrap_or(0)
     }
 }
 
