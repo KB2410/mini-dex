@@ -310,3 +310,6 @@ impl MiniDex {
 
 #[cfg(test)]
 mod test;
+
+#[cfg(test)]
+mod integration;
